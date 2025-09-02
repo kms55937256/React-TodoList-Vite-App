@@ -1,15 +1,41 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import TodoItem from './TodoItem';
 
 class TodoItemList extends Component {
+    /*
+        true 리턴 (myTodos 변수에 변동이 있는 경우)이면 render() 함수가 호출됨
+        false 리턴 (myTodos 변수에 변동이 없는 경우)이면 render() 함수가 호출되지 않음(렌더링 생략)
+    */
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.myTodos !== nextProps.myTodos;
+    }
+
     render() {
-        const { todos, myToggle, myRemove } = this.props;
+        const { myTodos, myToggle, myRemove } = this.props;
+        /*
+           const { id,text,checked } = todo;
+        */
+        const todoList = myTodos.map(({ id, text, checked }) => (
+            <TodoItem id={id}
+                text={text}
+                checked={checked}
+                onToggle={myToggle}
+                onRemove={myRemove}
+                key={id}
+            />
+        ));
         return (
             <div>
-                <TodoItem text="오늘의 할일1" checked={false} />
-                <TodoItem text="오늘의 할일2" checked={true} />
+                {todoList}
             </div>
         );
     }
 }
+
+TodoItemList.propTypes = {
+    myTodos: PropTypes.array,
+    myToggle: PropTypes.func,
+    myRemove: PropTypes.func
+};
 export default TodoItemList;
